@@ -102,3 +102,30 @@ plot(density(nrv))
 lines(density(out4), col = "red")
 
 ````
+
+(5.3.4)
+1.
+$$N(5) \sim Poisson(\Lambda)$$
+$$\Lambda = \int_0^5\lambda(t)dt=\int_0^5\sqrt{t}e^{-t}sin(2\pi t)dt=$$
+$$\Lambda =0.044768 => N(5) \sim Poisson(0.044768)$$
+
+2&3.
+````{r}
+set.seed(123)
+
+pois_proc <- function(intensity,intmax, tmax){
+  
+  n <- rpois(1, intmax)
+  tt <- runif(n, 0, tmax)
+  u<- runif(n)
+  accept <- u < intensity(tt) / intmax
+  sort(tt[accept])
+}
+
+intfun <- function(x) sqrt(x) + exp(-x) * sin(2 * pi* x)
+
+ff <- pois_proc(intfun, 2, 1)
+hist(unlist(replicate(1000, pois_proc(intfun, 2, 1))), xlab ="", main = "Simulated Data")
+curve(intfun(x)*100, 0, 1, add = TRUE, col = "red")
+````
+
